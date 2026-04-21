@@ -98,7 +98,7 @@ server.tool(
     month: z.string().optional().describe("Month in YYYY-MM format, e.g., 2026-04. Defaults to current month."),
   },
   async ({ month }) => {
-    const params = month ? { month } : {};
+    const params: Record<string, string> = month ? { month } : {};
     const data = await vimoFetch("/api/mcp/ai-performance-reports", params);
     return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
   }

@@ -1,0 +1,29 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.cuthongthai-vn/vimo-stock-intelligence",
+  "description": "Vietnam stock MCP: TA signals, Z/F/M scores, foreign flow, whale detection. 2000+ VN stocks.",
+  "repository": {
+    "url": "https://github.com/cuthongthai-vn/vimo-mcp-server",
+    "source": "github"
+  },
+  "version": "1.2.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@vimo.cuthongthai.vn/mcp-server",
+      "version": "1.2.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "VIMO_API_KEY",
+          "description": "Your VIMO API key. Get one free at https://vimo.cuthongthai.vn/finance/ai/api-docs",
+          "isRequired": true,
+          "isSecret": true,
+          "format": "string"
+        }
+      ]
+    }
+  ]
+}

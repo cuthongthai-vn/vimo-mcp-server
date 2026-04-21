@@ -1,6 +1,7 @@
 {
   "name": "@vimo.cuthongthai.vn/mcp-server",
   "version": "1.2.0",
+  "mcpName": "io.github.cuthongthai-vn/vimo-stock-intelligence",
   "description": "VIMO Financial Intelligence MCP Server — Vietnam's first MCP server for financial AI agents. 22 tools covering 2,000+ Vietnamese stocks.",
   "keywords": [
     "mcp",
