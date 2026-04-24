@@ -1,29 +1,21 @@
-# 🦉 VIMO Financial Intelligence — MCP Server
+# VIMO Financial Intelligence — MCP Server
+
+> 🦉 Vietnam's most comprehensive financial data and AI analysis platform, accessible via the Model Context Protocol.
 
 [![npm](https://img.shields.io/npm/v/@vimo.cuthongthai.vn/mcp-server)](https://www.npmjs.com/package/@vimo.cuthongthai.vn/mcp-server)
-[![MCP](https://img.shields.io/badge/MCP-compatible-blue)](https://modelcontextprotocol.io)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Vietnam's first MCP server for financial AI agents.**
+## Quick Start
 
-Gives Claude, ChatGPT, Gemini, and any AI agent instant access to VIMO's proprietary financial intelligence platform — covering **2,000+ Vietnamese stocks** across HOSE, HNX, UPCOM.
+### 1. Get your API key (free)
 
-> 🔗 **Live data:** [vimo.cuthongthai.vn](https://vimo.cuthongthai.vn)  
-> 📖 **API Docs:** [vimo.cuthongthai.vn/finance/ai/api-docs](https://vimo.cuthongthai.vn/finance/ai/api-docs)  
-> 📜 **Terms of Use:** [vimo.cuthongthai.vn/terms-of-use](https://vimo.cuthongthai.vn/terms-of-use)
+Visit [vimo.cuthongthai.vn/finance/ai/api-docs](https://vimo.cuthongthai.vn/finance/ai/api-docs) → Create key → Copy.
 
----
+Or use the demo key: `vimo_demo_public_readonly_2026` (rate-limited, VN30 only)
 
-## 🚀 Quick Start
+### 2. Connect to Claude Desktop
 
-### 1. Get a Free API Key
-
-Register at [vimo.cuthongthai.vn/finance/ai/api-docs](https://vimo.cuthongthai.vn/finance/ai/api-docs)  
-Free tier: **100 calls/day**
-
-### 2. Add to Claude Desktop
-
-Edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
+Add to `~/.claude/claude_desktop_config.json`:
 
 ```json
 {
@@ -32,143 +24,135 @@ Edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
       "command": "npx",
       "args": ["-y", "@vimo.cuthongthai.vn/mcp-server"],
       "env": {
-        "VIMO_API_KEY": "your_api_key_here"
+        "VIMO_API_KEY": "vimo_demo_public_readonly_2026"
       }
     }
   }
 }
 ```
 
-Restart Claude Desktop. Done! 🎉
+**Claude Code:**
 
-### 3. Test It
+```bash
+claude config add-mcp vimo-financial-intel -- env VIMO_API_KEY=vimo_demo_public_readonly_2026 npx -y @vimo.cuthongthai.vn/mcp-server
+```
 
-In Claude, try:
-> *"Phân tích cổ phiếu FPT cho tôi"*  
-> *"Thị trường chứng khoán VN hôm nay thế nào?"*  
-> *"Cổ phiếu nào ngoại tệ đang mua nhiều nhất?"*
+### 3. Ask Claude about Vietnamese stocks
 
----
+```
+"FPT giá bao nhiêu hôm nay?"
+"Phân tích kỹ thuật VCB"
+"Sàng lọc cổ phiếu tăng trưởng"
+"AI pick win rate tháng này?"
+"Best commodity playbook for rising oil?"
+```
 
-## 🛠️ 22 Available Tools
+## Available Tools (35)
 
-### Intelligence Layer (VIMO Proprietary)
-
+### L0: DISCOVER (3)
 | Tool | Description |
 |------|-------------|
-| `get_ta_narrative` | TA signals (RSI, MACD, Bollinger, MFI) + AI narrative |
-| `get_bctc_summary` | Financial health (Z-Score, F-Score, M-Score, DuPont) |
-| `get_ai_performance` | Forward-test verified AI pick win rate & Sharpe |
-| `get_ai_performance_reports` | Monthly per-stock performance breakdown |
-| `get_factor_importance` | Why AI picked a specific stock (explainability) |
+| `search_stocks` | Search Vietnamese stocks by name or ticker |
+| `get_stock_info` | Company profile + latest price + key financial ratios + moat score |
+| `get_realtime_quote` | Real-time price from SSI FastConnect + foreign flow + optional 1-min bars |
 
-### Market Data
-
+### L1: CONTEXT (5)
 | Tool | Description |
 |------|-------------|
+| `get_index_history` | VNINDEX/VN30/HNX30 daily OHLCV history |
+| `get_macro_snapshot` | Vietnam + global macro indicators (SBV rates, CPI, GDP, PMI) |
 | `get_foreign_flow` | Foreign investor net buy/sell — top 10 stocks |
-| `get_sector_rotation` | Sector heatmap (hot/cold by daily return) |
-| `get_whale_activity` | Unusual volume detector (>2× average) |
-| `get_market_snapshot` | **Full daily snapshot** (all 13 collectors in 1 call) |
+| `get_sector_rotation` | Sector heatmap — hot/cold sectors by daily return |
+| `get_warwatch_osint` | WarWatch geopolitical risk score + Iran-Hormuz oil risk |
 
-### Investment Playbooks (13 Categories)
+### L2: SCREEN (2)
+| Tool | Description |
+|------|-------------|
+| `screen_stocks` | Stock screener — 13 built-in strategies (growth, value, dividend, etc.) |
+| `get_sector_rotation` | Sector heatmap for rotation timing |
 
-| Tool | Category |
-|------|---------|
-| `get_warwatch_playbooks` | 🌍 Geopolitical risk strategies |
-| `get_political_playbooks` | 🏛️ Policy impact (NQ68, infrastructure) |
-| `get_macro_playbooks` | 📊 GDP, CPI, FDI scenarios |
-| `get_bank_rate_playbooks` | 🏦 Interest rate strategies |
-| `get_sector_rotation_playbooks` | 🔄 Market cycle rotation |
-| `get_dong_tien_playbooks` | 💰 Smart money flow |
-| `get_commodity_playbooks` | 🛢️ Oil, gold, steel impact |
-| `get_bds_playbooks` | 🏠 Real estate sector |
-| `get_fund_playbooks` | 📈 ETF & mutual fund strategies |
-| `get_gia_toc_playbooks` | 🏢 Business dynasty analysis |
-| `get_psychology_playbooks` | 🧠 Behavioral finance |
-| `get_wealth_playbooks` | 💎 Personal wealth building |
-| `get_investment_checklists` | ✅ Pre-investment due diligence |
+### L3: ANALYZE (6)
+| Tool | Description |
+|------|-------------|
+| `get_price_history` | Daily OHLCV price history for any stock |
+| `get_financials` | Balance sheet, income statement, cash flow, ratios |
+| `get_technical_signals` | Technical indicators: RSI, MACD, MA cross, volume |
+| `get_ta_narrative` | Technical analysis + AI narrative for VN stocks |
+| `get_bctc_summary` | Financial statement analysis (ROE, Z-score, 5 strategies) |
+| `get_factor_importance` | Factor importance breakdown per stock |
 
----
+### L4: VALIDATE (5)
+| Tool | Description |
+|------|-------------|
+| `get_opinion` | Analyst consensus + AI recommendation |
+| `get_insider_activity` | Insider trading transactions |
+| `get_corporate_events` | Dividends, shareholder meetings, rights issues |
+| `get_whale_activity` | Unusual volume stocks (>2× avg) — institutional signals |
+| `get_ai_performance` | AI pick win rate and performance metrics |
 
-## 📦 Installation (Developers)
+### L5: DECIDE (1)
+| Tool | Description |
+|------|-------------|
+| `get_news_sentiment` | News sentiment score per stock — bullish/bearish/neutral |
 
-```bash
-npm install @vimo.cuthongthai.vn/mcp-server
-```
+### L8: LEARN — Investment Playbooks (13)
+| Tool | Description |
+|------|-------------|
+| `get_bank_rate_playbooks` | Interest rate scenario strategies |
+| `get_bds_playbooks` | Real estate investment playbooks |
+| `get_commodity_playbooks` | Commodity impact analysis |
+| `get_dong_tien_playbooks` | Money flow (foreign, institutional, retail) |
+| `get_fund_playbooks` | ETF and mutual fund comparison |
+| `get_gia_toc_playbooks` | Business dynasty analysis |
+| `get_investment_checklists` | Pre-investment due diligence |
+| `get_macro_playbooks` | Macroeconomic scenario strategies |
+| `get_political_playbooks` | Political alpha (policy impact) |
+| `get_psychology_playbooks` | Trading psychology |
+| `get_sector_rotation_playbooks` | Sector rotation by market cycle |
+| `get_warwatch_playbooks` | Geopolitical risk strategies |
+| `get_wealth_playbooks` | Personal wealth building |
 
-Or run directly:
-```bash
-VIMO_API_KEY=your_key npx @vimo.cuthongthai.vn/mcp-server
-```
+## Security
 
----
+- 🔒 **API key required** — server refuses to start without valid `VIMO_API_KEY`
+- 🔑 **Key format validation** — must match `vimo_[a-zA-Z0-9]{32+}` or `vimo_demo*`
+- ⏱️ **30s request timeout** — prevents hanging connections
+- 🛡️ **12-layer defense** on server side (rate limiting, input sanitization, canary detection)
+- 🧹 **Input sanitized** — symbols and categories validated before sending
 
-## 💻 Usage in Code
+## Data Coverage
 
-```typescript
-import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+- **~2,000 VN stocks** (HOSE, HNX, UPCOM)
+- **50+ data sources** (SBV, GSO, SSI FastConnect, FMP, Yahoo, Binance)
+- **Real-time prices** via SSI FastConnect (15-min delay during market hours)
+- **Daily updates** (6:00 AM ICT) for fundamentals, signals, and AI picks
 
-const transport = new StdioClientTransport({
-  command: "npx",
-  args: ["-y", "@vimo.cuthongthai.vn/mcp-server"],
-  env: { VIMO_API_KEY: "your_key" },
-});
+## Rate Limits
 
-const client = new Client({ name: "my-app", version: "1.0.0" });
-await client.connect(transport);
+| Tier | Calls/day | Calls/min | Price |
+|------|-----------|-----------|-------|
+| Demo | 50 | 3 | Free |
+| Free | 100 | 5 | $0/mo |
+| Developer | 1,000 | 10 | $19/mo |
+| Pro | 3,000 | 20 | $49/mo |
+| Enterprise | Unlimited | 60 | $299/mo |
 
-// Analyze FPT stock
-const result = await client.callTool({
-  name: "get_ta_narrative",
-  arguments: { symbol: "FPT" },
-});
-console.log(result.content[0].text);
+Get your API key at [vimo.cuthongthai.vn/finance/ai/api-docs](https://vimo.cuthongthai.vn/finance/ai/api-docs)
 
-// Get foreign flow
-const flow = await client.callTool({ name: "get_foreign_flow", arguments: {} });
-```
+## Environment Variables
 
----
+| Variable | Required | Default | Description |
+|----------|:--------:|---------|-------------|
+| `VIMO_API_KEY` | **Yes** | — | Your VIMO API key |
+| `VIMO_API_BASE` | No | `https://vimo.cuthongthai.vn` | API base URL |
 
-## ⚡ API Tiers
+## Also Available
 
-| Tier | Calls/Day | Price |
-|------|-----------|-------|
-| Free | 100 | $0 |
-| Developer | 1,000 | $19/mo |
-| Pro | 3,000 | $49/mo |
-| Enterprise | Unlimited | $299/mo |
+- **REST API**: `GET https://vimo.cuthongthai.vn/api/mcp/realtime-quote?symbol=FPT` (+ `x-api-key` header)
+- **MCP manifest**: `https://vimo.cuthongthai.vn/api/mcp/manifest.json` (35 tools)
+- **Discovery**: `/.well-known/mcp.json`, `/llms.txt`
+- **LLM info**: `https://vimo.cuthongthai.vn/llms.txt`
 
----
+## License
 
-## 🔒 Security
-
-- All tools are **read-only** (`readOnlyHint: true`)
-- No trade execution — VIMO never places orders
-- Input sanitization on all parameters
-- API key authentication via `x-api-key` header
-- Rate limiting per tier
-
----
-
-## ⚠️ Disclaimer
-
-All VIMO data is for **informational purposes only**. This is NOT investment advice. Always consult a qualified financial professional before making investment decisions. Past AI pick performance does not guarantee future results.
-
----
-
-## 📄 License
-
-MIT © [Cú Thông Thái](https://cuthongthai.vn)
-
----
-
-## 🔗 Links
-
-- [VIMO Platform](https://vimo.cuthongthai.vn)
-- [API Documentation](https://vimo.cuthongthai.vn/finance/ai/api-docs)
-- [Terms of Use](https://vimo.cuthongthai.vn/terms-of-use)
-- [MCP Discovery](https://vimo.cuthongthai.vn/.well-known/mcp.json)
-- [Report Issues](https://github.com/cuthongthai-vn/vimo-mcp-server/issues)
+MIT — © CuThongThai 2026

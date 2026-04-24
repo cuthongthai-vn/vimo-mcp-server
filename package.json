@@ -1,52 +1,51 @@
 {
   "name": "@vimo.cuthongthai.vn/mcp-server",
-  "version": "1.2.0",
-  "mcpName": "io.github.cuthongthai-vn/vimo-stock-intelligence",
-  "description": "VIMO Financial Intelligence MCP Server — Vietnam's first MCP server for financial AI agents. 22 tools covering 2,000+ Vietnamese stocks.",
+  "version": "2.0.0",
+  "description": "VIMO Financial Intelligence — MCP Server for Vietnamese stock market data and AI analysis. 34 tools: stock search, company profiles, screener (13 strategies), technical analysis, financial ratios, news sentiment, insider activity, macro indicators, 12 investment playbook categories, geopolitical risk.",
+  "type": "module",
+  "main": "index.js",
+  "bin": {
+    "vimo-mcp-server": "./index.js"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
   "keywords": [
     "mcp",
+    "mcp-server",
     "model-context-protocol",
-    "vietnam",
-    "finance",
-    "stocks",
-    "investment",
+    "claude",
     "ai-agent",
     "financial-data",
-    "vn-stocks"
+    "vietnam-stocks",
+    "vietnamese-market",
+    "stock-screening",
+    "technical-analysis",
+    "vn-index",
+    "hose",
+    "stock-market",
+    "macro-economics",
+    "investment"
   ],
-  "homepage": "https://vimo.cuthongthai.vn",
+  "author": "CuThongThai <support@cuthongthai.vn>",
+  "license": "MIT",
+  "homepage": "https://vimo.cuthongthai.vn/finance/ai/api-docs",
   "repository": {
     "type": "git",
     "url": "https://github.com/cuthongthai-vn/vimo-mcp-server"
   },
-  "license": "MIT",
-  "author": "Cú Thông Thái <support@cuthongthai.vn>",
-  "type": "module",
-  "bin": {
-    "vimo-mcp-server": "./dist/index.js"
+  "bugs": {
+    "url": "https://github.com/cuthongthai-vn/vimo-mcp-server/issues"
   },
-  "main": "./dist/index.js",
   "files": [
-    "dist",
+    "index.js",
     "README.md",
     "LICENSE"
   ],
-  "scripts": {
-    "build": "tsc",
-    "dev": "tsx src/index.ts",
-    "start": "node dist/index.js",
-    "prepublishOnly": "npm run build"
-  },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.11.0",
-    "zod": "^3.23.8"
-  },
-  "devDependencies": {
-    "@types/node": "^22.0.0",
-    "tsx": "^4.19.0",
-    "typescript": "^5.6.0"
+    "@modelcontextprotocol/sdk": "^1.20.0"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=18.0.0"
   }
 }
