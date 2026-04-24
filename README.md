@@ -37,6 +37,32 @@ Add to `~/.claude/claude_desktop_config.json`:
 claude config add-mcp vimo-financial-intel -- env VIMO_API_KEY=vimo_demo_public_readonly_2026 npx -y @vimo.cuthongthai.vn/mcp-server
 ```
 
+**Cursor:** Add to `~/.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "vimo": {
+      "command": "npx",
+      "args": ["-y", "@vimo.cuthongthai.vn/mcp-server"],
+      "env": {
+        "VIMO_API_KEY": "vimo_demo_public_readonly_2026"
+      }
+    }
+  }
+}
+```
+
+**Windsurf / Cline:** Add to MCP settings:
+
+```json
+{
+  "command": "npx",
+  "args": ["-y", "@vimo.cuthongthai.vn/mcp-server"],
+  "env": { "VIMO_API_KEY": "vimo_demo_public_readonly_2026" }
+}
+```
+
 ### 3. Ask Claude about Vietnamese stocks
 
 ```

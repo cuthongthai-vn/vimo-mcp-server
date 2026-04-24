@@ -118,7 +118,16 @@ async function callVIMO(endpoint, params = {}) {
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // TOOL DEFINITIONS (JSON Schema — no Zod dependency)
+// MCP 2025 spec: all tools annotated with hints
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+// All VIMO tools are read-only data queries — no side effects
+const TOOL_ANNOTATIONS = {
+  readOnlyHint: true,       // No data mutations
+  destructiveHint: false,   // No destructive actions
+  idempotentHint: true,     // Same input → same output
+  openWorldHint: false,     // Finite, known data domain
+};
 
 const TOOLS = [
   // ── L0: DISCOVER ──
@@ -461,12 +470,13 @@ const server = new Server(
 );
 
 
-// Handler: List all tools
+// Handler: List all tools (with MCP 2025 annotations)
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
   tools: TOOLS.map(t => ({
     name: t.name,
     description: t.description,
     inputSchema: t.inputSchema,
+    annotations: t.annotations || TOOL_ANNOTATIONS,
   })),
 }));
 
