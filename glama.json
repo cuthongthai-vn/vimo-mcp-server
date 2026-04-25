@@ -1,0 +1,31 @@
+{
+  "name": "vimo-mcp-server",
+  "displayName": "VIMO Financial Intelligence",
+  "description": "Vietnam's most comprehensive financial data and AI analysis platform — 35 tools covering real-time quotes, technical analysis, financial statements, stock screener (13 strategies), AI picks, foreign flow, macro indicators, and 13 investment playbook categories.",
+  "version": "2.0.0",
+  "license": "MIT",
+  "homepage": "https://vimo.cuthongthai.vn",
+  "documentation": "https://vimo.cuthongthai.vn/finance/ai/api-docs",
+  "categories": ["Finance", "Search", "AI & Machine Learning"],
+  "tags": ["vietnam", "stocks", "finance", "investment", "market-data", "technical-analysis"],
+  "author": {
+    "name": "CuThongThai",
+    "email": "support@cuthongthai.vn",
+    "url": "https://cuthongthai.vn"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cuthongthai-vn/vimo-mcp-server"
+  },
+  "npm": {
+    "package": "@vimo.cuthongthai.vn/mcp-server",
+    "version": "2.0.0"
+  },
+  "tools": 35,
+  "authentication": {
+    "type": "api-key",
+    "header": "x-api-key",
+    "free_tier": true,
+    "demo_key": "vimo_demo_public_readonly_2026"
+  }
+}
