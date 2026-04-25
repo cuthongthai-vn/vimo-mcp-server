@@ -2,7 +2,30 @@
 
 All notable changes to the VIMO MCP Server will be documented in this file.
 
+## [2.1.0] - 2026-04-25
+
+### Added
+- **MCP Prompts Primitive** (MCP 2025 spec): 5 workflow templates
+  - `analyze_stock` — comprehensive stock analysis (6 tools in sequence)
+  - `market_outlook` — daily market intelligence briefing
+  - `screener_strategy` — investment strategy screening + analysis
+  - `portfolio_review` — multi-stock portfolio review and rebalancing
+  - `macro_briefing` — comprehensive Vietnam macro briefing
+- **Streamable HTTP Transport** at `POST /api/mcp` — enables 1-click install on Glama and remote MCP clients (Cursor, Windsurf, Zed)
+- **Structured error codes**: `VIMO_AUTH_ERROR`, `VIMO_RATE_LIMIT`, `VIMO_TIMEOUT`, `VIMO_UPSTREAM_ERROR`
+- **Batch JSON-RPC** support — handle multiple requests in one HTTP call
+- `GET /api/mcp` health endpoint with server metadata
+- `glama.json` registry metadata file for Glama quality score
+
+### Changed
+- Server version: `2.0.0` → `2.1.0`
+- `capabilities`: added `prompts: {}` declaration
+- Startup log: `35 tools + 5 prompts ready`
+
+---
+
 ## [2.0.0] - 2026-04-24
+
 
 ### Added
 - **13 new tools**: `search_stocks`, `get_stock_info`, `get_realtime_quote`, `get_index_history`, `get_macro_snapshot`, `screen_stocks`, `get_price_history`, `get_financials`, `get_technical_signals`, `get_opinion`, `get_insider_activity`, `get_corporate_events`, `get_news_sentiment`

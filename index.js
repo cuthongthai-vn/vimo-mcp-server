@@ -28,6 +28,8 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import {
   ListToolsRequestSchema,
   CallToolRequestSchema,
+  ListPromptsRequestSchema,
+  GetPromptRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 
 
@@ -454,17 +456,167 @@ const TOOLS = [
 
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// PROMPT DEFINITIONS (MCP 2025 Prompts Primitive)
+// Templates guide AI agents through complex workflows
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+const PROMPTS = [
+  {
+    name: 'analyze_stock',
+    description: 'Comprehensive analysis of a Vietnamese stock — technicals, fundamentals, AI opinion, and investment verdict.',
+    arguments: [
+      { name: 'symbol', description: 'Stock ticker, e.g. FPT, VCB, HPG', required: true },
+    ],
+  },
+  {
+    name: 'market_outlook',
+    description: 'Daily Vietnam stock market intelligence — index status, sector rotation, foreign flow, whale activity.',
+    arguments: [],
+  },
+  {
+    name: 'screener_strategy',
+    description: 'Screen Vietnamese stocks using an investment strategy and analyze top results.',
+    arguments: [
+      { name: 'strategy', description: 'Strategy: buffett, graham, lynch, piotroski, oneil, canslim', required: true },
+    ],
+  },
+  {
+    name: 'portfolio_review',
+    description: 'Review multiple stocks for portfolio construction — compare moat scores, technicals, and risk concentration.',
+    arguments: [
+      { name: 'symbols', description: 'Comma-separated tickers, e.g. FPT,VCB,HPG', required: true },
+    ],
+  },
+  {
+    name: 'macro_briefing',
+    description: 'Comprehensive Vietnam macro briefing — GDP, CPI, interest rates, FX, commodities, market regime.',
+    arguments: [],
+  },
+];
+
+function buildPromptMessages(name, args = {}) {
+  switch (name) {
+    case 'analyze_stock': {
+      const sym = (args.symbol || '').toUpperCase();
+      return [{
+        role: 'user',
+        content: {
+          type: 'text',
+          text: `Phân tích toàn diện cổ phiếu ${sym} bằng các công cụ VIMO MCP theo thứ tự:
+
+1. **Khám phá**: Gọi get_stock_info(symbol="${sym}") — tổng quan công ty, giá, tài chính
+2. **Kỹ thuật**: Gọi get_technical_signals(symbol="${sym}") — RSI, MACD, tín hiệu MUA/BÁN
+3. **Cơ bản**: Gọi get_bctc_summary(symbol="${sym}") — ROE, ROA, Altman Z-score
+4. **Ý kiến AI**: Gọi get_opinion(symbol="${sym}") — moat, ESG, consensus phân tích viên
+5. **Nội bộ**: Gọi get_insider_activity(symbol="${sym}", days=90) — giao dịch cổ đông lớn
+6. **Tổng hợp**: Đưa ra khuyến nghị MUA/GIỮ/BÁN với confidence score (0-100%) và stop-loss gợi ý.
+
+Trình bày theo format: Tóm tắt 2 câu → Điểm mạnh → Rủi ro → Kết luận đầu tư.`,
+        },
+      }];
+    }
+    case 'market_outlook': {
+      return [{
+        role: 'user',
+        content: {
+          type: 'text',
+          text: `Tạo bản tin thị trường chứng khoán Việt Nam hôm nay bằng các công cụ VIMO MCP:
+
+1. **Toàn cảnh**: Gọi get_market_snapshot() — 13 chỉ số tổng hợp
+2. **Dòng tiền ngoại**: Gọi get_foreign_flow() — top mua/bán ròng
+3. **Cá mập**: Gọi get_whale_activity() — cổ phiếu khối lượng bất thường
+4. **Luân chuyển ngành**: Gọi get_sector_rotation() — ngành nóng/lạnh hôm nay
+5. **Vĩ mô**: Gọi get_macro_snapshot() — GDP, lãi suất, tỷ giá
+
+Kết cấu báo cáo:
+- 📊 Tổng quan VNINDEX (điểm, thanh khoản, xu hướng)
+- 💰 Dòng tiền ngoại (mua/bán ròng top 5)
+- 🐋 Tín hiệu cá mập (cổ phiếu nổi bật)
+- 🔄 Ngành dẫn dắt hôm nay
+- ⚠️ Rủi ro cần lưu ý
+- 🎯 3 cơ hội đáng chú ý`,
+        },
+      }];
+    }
+    case 'screener_strategy': {
+      const strat = (args.strategy || 'buffett').toLowerCase();
+      return [{
+        role: 'user',
+        content: {
+          type: 'text',
+          text: `Tìm cổ phiếu Việt Nam phù hợp chiến lược ${strat.toUpperCase()} bằng VIMO MCP:
+
+1. **Lọc**: Gọi screen_stocks(strategy="${strat}", min_score=65) — top cổ phiếu theo chiến lược
+2. **Phân tích top 5**: Với mỗi cổ phiếu trong top 5 kết quả:
+   - get_opinion(symbol=X) — moat + ESG + consensus
+   - get_technical_signals(symbol=X) — timing tốt để mua không?
+3. **Tổng hợp**: Xếp hạng top 3 theo conviction và giải thích tại sao mỗi cổ phiếu phù hợp chiến lược ${strat}.
+
+Lưu ý: Chiến lược ${strat} ưu tiên những tiêu chí gì? Phân tích ngắn gọn lý thuyết → áp dụng vào thực tế VN.`,
+        },
+      }];
+    }
+    case 'portfolio_review': {
+      const syms = (args.symbols || '').toUpperCase().split(',').map(s => s.trim()).filter(Boolean);
+      const symList = syms.join(', ') || 'FPT, VCB, HPG';
+      return [{
+        role: 'user',
+        content: {
+          type: 'text',
+          text: `Review danh mục cổ phiếu [${symList}] bằng VIMO MCP:
+
+${syms.map(s => `- get_stock_info(symbol="${s}") + get_technical_signals(symbol="${s}")`).join('\n')}
+
+Sau khi có đủ data, phân tích:
+1. **Phân bổ ngành**: Có quá tập trung vào 1 ngành không?
+2. **Moat scores**: Cổ phiếu nào có lợi thế cạnh tranh bền vững nhất?
+3. **Momentum**: Cổ phiếu nào đang trong xu hướng tốt nhất về kỹ thuật?
+4. **Rủi ro**: Cổ phiếu nào yếu nhất, nên giảm tỷ trọng?
+5. **Gợi ý**: Cơ cấu lại danh mục như thế nào để tối ưu risk/return?`,
+        },
+      }];
+    }
+    case 'macro_briefing': {
+      return [{
+        role: 'user',
+        content: {
+          type: 'text',
+          text: `Tạo bản tin vĩ mô toàn diện cho nhà đầu tư Việt Nam:
+
+1. **Vĩ mô VN**: Gọi get_macro_snapshot(category="vietnam") — GDP, CPI, lãi suất, tỷ giá
+2. **Vĩ mô Mỹ**: Gọi get_macro_snapshot(category="us") — Fed rate, DXY, US CPI
+3. **Vĩ mô TQ**: Gọi get_macro_snapshot(category="china") — GDP, LPR, CNY
+4. **Hàng hoá**: Gọi get_macro_snapshot(category="commodities") — dầu, vàng, thép
+5. **VNINDEX**: Gọi get_index_history(index="VNINDEX", days=30) — xu hướng 1 tháng
+
+Kết cấu bản tin:
+- 🇻🇳 Kinh tế VN (tín hiệu tích cực/tiêu cực)
+- 🌐 Bức tranh toàn cầu (FED, TQ, địa chính trị)
+- 📈 Tác động tới TTCK VN
+- ⚡ Ngành nào hưởng lợi/chịu áp lực?
+- 🗓️ Sự kiện vĩ mô quan trọng tuần tới cần theo dõi`,
+        },
+      }];
+    }
+    default:
+      return [{ role: 'user', content: { type: 'text', text: `Unknown prompt: ${name}` } }];
+  }
+}
+
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // MCP SERVER (raw Server API — Zod-free)
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 const server = new Server(
   {
     name: 'vimo-financial-intelligence',
-    version: '2.0.0',
+    version: '2.1.0',
   },
   {
     capabilities: {
       tools: {},
+      prompts: {},
     },
   }
 );
@@ -508,6 +660,26 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 });
 
 
+// Handler: List all prompts
+server.setRequestHandler(ListPromptsRequestSchema, async () => ({
+  prompts: PROMPTS,
+}));
+
+
+// Handler: Get a specific prompt with arguments
+server.setRequestHandler(GetPromptRequestSchema, async (request) => {
+  const { name, arguments: args = {} } = request.params;
+  const prompt = PROMPTS.find(p => p.name === name);
+  if (!prompt) {
+    throw new Error(`Unknown prompt: ${name}. Available: ${PROMPTS.map(p => p.name).join(', ')}`);
+  }
+  return {
+    description: prompt.description,
+    messages: buildPromptMessages(name, args),
+  };
+});
+
+
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // START SERVER
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -515,7 +687,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error(`[VIMO MCP] ✅ Server v2.0.0 started — ${TOOLS.length} tools ready`);
+  console.error(`[VIMO MCP] ✅ Server v2.1.0 started — ${TOOLS.length} tools + ${PROMPTS.length} prompts ready`);
   console.error(`[VIMO MCP] 🔑 API key: ${API_KEY.slice(0, 13)}...`);
   console.error(`[VIMO MCP] 🌐 Base: ${API_BASE}`);
 }
